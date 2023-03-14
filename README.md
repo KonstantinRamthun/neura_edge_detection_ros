@@ -112,7 +112,9 @@ Preprocessing is implemented in `BaseEdgeDetector`. It contains a vector of pote
 ## References
 <a id="1">[1]</a>
 Sun, R., Lei, T., Chen, Q., Wang, Z., Du, X., Zhao, W., & Nandi, A. K. (2022). Survey of Image Edge Detection. Frontiers in Signal Processing, 2. doi:10.3389/frsip.2022.826967
+
 <a id="2">[2]</a>
 Canny, J. (1986). A computational approach to edge detection. IEEE Transactions on pattern analysis and machine intelligence, (6), 679-698.
+
 <a id="3">[3]</a>
 Banterle, F.; Corsini, M.; Cignoni, P.; Scopigno, R. (2011). "A Low-Memory, Straightforward and Fast Bilateral Filter Through Subsampling in Spatial Domain". Computer Graphics Forum. 31 (1): 19–32. doi:10.1111/j.1467-8659.2011.02078.x
