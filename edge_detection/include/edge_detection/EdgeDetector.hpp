@@ -4,6 +4,7 @@
 namespace edge_detection
 {
 
+
 /** Base class for preprocessing filters. Abstract base class which enforces inheriting classes to implemented the apply-method.
 */
 class Filter{

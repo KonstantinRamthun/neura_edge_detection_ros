@@ -8,13 +8,17 @@ project(edge_detection)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  roscpp
   geometry_msgs
   std_msgs
+  sensor_msgs
+  message_generation
+  cv_bridge
+  OpenCV REQUIRED 
 )
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
-find_package( OpenCV REQUIRED )
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -53,11 +57,10 @@ find_package( OpenCV REQUIRED )
 # )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+ add_service_files(
+   FILES
+   EdgeDetection.srv
+ )
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -67,10 +70,12 @@ find_package( OpenCV REQUIRED )
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   geometry_msgs#   std_msgs
-# )
+ generate_messages(
+   DEPENDENCIES
+   geometry_msgs
+   std_msgs
+   sensor_msgs
+ )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -102,8 +107,8 @@ find_package( OpenCV REQUIRED )
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES edge_detection
+  INCLUDE_DIRS include
+  LIBRARIES edge_detection
 #  CATKIN_DEPENDS geometry_msgs std_msgs
 #  DEPENDS system_lib
 )
@@ -131,15 +136,27 @@ set(SOURCES ${CPP_FILES})
 #target_include_directories(TARGET_NAME PUBLIC ${INCLUDE_DIRECTORIES} )
 #target_link_libraries(TARGET_NAME ) # fill this up with the dependencies you want for eg opencv
 
+## Declare a C++ library
+add_library(${PROJECT_NAME}
+  src/EdgeDetector.cpp
+ )
+
 add_executable(EdgeDetection src/EdgeDetector.cpp )
 target_include_directories(EdgeDetection PUBLIC ${INCLUDE_DIRECTORIES} )
-#target_link_libraries(EdgeDetection TARGET_NAME)
 target_link_libraries( EdgeDetection ${OpenCV_LIBS} )
 
-## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/edge_detection.cpp
-# )
+add_executable(edge_detection_service src/Service.cpp )
+target_include_directories(edge_detection_service PUBLIC ${INCLUDE_DIRECTORIES} )
+target_link_libraries( edge_detection_service ${PROJECT_NAME} )
+target_link_libraries( edge_detection_service ${OpenCV_LIBS} )
+target_link_libraries(edge_detection_service ${catkin_LIBRARIES})
+
+add_executable(edge_detection_client src/Client.cpp )
+target_include_directories(edge_detection_client PUBLIC ${INCLUDE_DIRECTORIES} )
+target_link_libraries( edge_detection_client ${PROJECT_NAME} )
+target_link_libraries( edge_detection_client ${OpenCV_LIBS} )
+target_link_libraries(edge_detection_client ${catkin_LIBRARIES})
+
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
