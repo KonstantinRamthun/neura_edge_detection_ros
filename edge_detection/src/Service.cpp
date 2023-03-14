@@ -76,19 +76,25 @@ std::unique_ptr<edge_detection::BaseEdgeDetector> detector;
 bool detectEdges(edge_detection::EdgeDetectionRequest  &req, edge_detection::EdgeDetectionResponse &res)
     {
         // Parse sensor_msgs::Image to cv::Mat 
+        ROS_INFO("Received request.");
         cv::Mat image = (*cv_bridge::toCvCopy(req.image)).image;
         
         // Detect edges
         cv::Mat edges = detector->detectEdges(image);
         // Parse edges back to sensor_msgs::Image
-        return false;
+        cv_bridge::CvImage(std_msgs::Header(), "mono8", edges).toImageMsg(res.edges);
+        ROS_INFO("Send respond.");
+        return true;
     } 
 
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "edge_detection_service");
     ros::NodeHandle n;
-    parse_arguments(argc, argv, detector);
+    bool parsed = parse_arguments(argc, argv, detector);
+    if (!parsed){
+        return -1;
+    }
     ros::ServiceServer service_server = n.advertiseService("detect_edges", detectEdges);
     ROS_INFO("Ready to detect edges.");
     ros::spin();

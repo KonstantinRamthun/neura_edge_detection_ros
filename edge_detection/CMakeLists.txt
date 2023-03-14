@@ -146,12 +146,16 @@ target_include_directories(EdgeDetection PUBLIC ${INCLUDE_DIRECTORIES} )
 target_link_libraries( EdgeDetection ${OpenCV_LIBS} )
 
 add_executable(edge_detection_service src/Service.cpp )
-
 target_include_directories(edge_detection_service PUBLIC ${INCLUDE_DIRECTORIES} )
 target_link_libraries( edge_detection_service ${PROJECT_NAME} )
 target_link_libraries( edge_detection_service ${OpenCV_LIBS} )
 target_link_libraries(edge_detection_service ${catkin_LIBRARIES})
 
+add_executable(edge_detection_client src/Client.cpp )
+target_include_directories(edge_detection_client PUBLIC ${INCLUDE_DIRECTORIES} )
+target_link_libraries( edge_detection_client ${PROJECT_NAME} )
+target_link_libraries( edge_detection_client ${OpenCV_LIBS} )
+target_link_libraries(edge_detection_client ${catkin_LIBRARIES})
 
 
 ## Add cmake target dependencies of the library
