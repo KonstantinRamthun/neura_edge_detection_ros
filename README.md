@@ -1,8 +1,9 @@
 # Vision Programming Challenge
 ## Table of Contents
-1. [The Challenge](#the-challenge)
+1. [Challenge Description](#challenge-description)
+2. [Solution for Task Basic](#solution-for-task-basic)
 
-## The Challenge
+## Challenge Description
 ### Introduction
 Thank you for agreeing to spend your time solving this programming challenge in the vision domain for us. We will evaluate your solution based on accuracy, code quality, and how clearly you describe your technique.
 
@@ -55,3 +56,16 @@ Extend the code further by visualizing the 3D edge points for each frame as RViz
 #### 4. Advanced: 
 Do all the above tasks.
 
+## Solution for Task Basic
+
+This section descibes the solution to the basic task.
+
+### Installation
+1. Clone this repository into your catkin workspace.
+2. [Install OpenCV](https://docs.opencv.org/4.x/d7/d9f/tutorial_linux_install.html)
+### Usage
+### Implementation Steps
+
+### Concepts Used
+
+### Possible Improvements
