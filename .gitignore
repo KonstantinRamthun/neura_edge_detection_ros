@@ -44,3 +44,5 @@ gtest
 *.cmake
 *.ini
 test_results
+edge_detection/CMakeCache.txt
+edge_detection/Makefile
