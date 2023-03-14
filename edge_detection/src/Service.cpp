@@ -7,7 +7,7 @@
 
        
 /**
- * Parses the CLI-arguments to an OpenCV Mat containing the image and to an edge detector.
+ * Parses the CLI-arguments to an edge detector.
 */
 bool parse_arguments(int argc, char **argv, std::unique_ptr<edge_detection::BaseEdgeDetector>& edge_detector){
 	// How to format the keys: https://docs.opencv.org/3.4/d0/d2e/classcv_1_1CommandLineParser.html
@@ -71,19 +71,17 @@ bool parse_arguments(int argc, char **argv, std::unique_ptr<edge_detection::Base
 	return true;
 }
 
+/// @brief Edge detector which provides the core functionality of the service. TODO: Embed this in a class.
 std::unique_ptr<edge_detection::BaseEdgeDetector> detector;
 
 bool detectEdges(edge_detection::EdgeDetectionRequest  &req, edge_detection::EdgeDetectionResponse &res)
     {
         // Parse sensor_msgs::Image to cv::Mat 
-        ROS_INFO("Received request.");
         cv::Mat image = (*cv_bridge::toCvCopy(req.image)).image;
-        
         // Detect edges
         cv::Mat edges = detector->detectEdges(image);
         // Parse edges back to sensor_msgs::Image
         cv_bridge::CvImage(std_msgs::Header(), "mono8", edges).toImageMsg(res.edges);
-        ROS_INFO("Send respond.");
         return true;
     } 
 
