@@ -32,3 +32,15 @@
 *.exe
 *.out
 *.app
+
+# Build files
+atomic_configure
+bin
+catkin
+catkin_generated
+CMakeFiles
+devel
+gtest
+*.cmake
+*.ini
+test_results
