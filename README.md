@@ -2,6 +2,7 @@
 ## Table of Contents
 1. [Challenge Description](#challenge-description)
 2. [Solution for Task Basic](#solution-for-task-basic)
+2. [Solution for Task Vision](#solution-for-task-vision)
 3. [References](#references)
 
 ## Challenge Description
@@ -108,7 +109,24 @@ Preprocessing is implemented in `BaseEdgeDetector`. It contains a vector of pote
 ### Possible Improvements
  - Tune default parameters 
  - Add additional edge detection methods, e.g. ML-based methods
- 
+
+
+## Solution for Task Vision
+Note that this task is currently not finished.
+### Usage
+#### For the edge detection service
+```
+rosrun edge_detection edge_detection_service <Optional parameters>
+```
+Optional parameters are all CLI-parameters from the basic task except for `path`.
+
+#### For the edge detection client
+The client can be used in two modes. The first mode is used for testing and processes a path. This mode can be run by calling:
+```
+rosrun edge_detection edge_detection_service --path=<path>
+```
+The second mode mode can detect images from the camera, if the bag file is running. For this mode the path argument can be obmitted. This mode is not fully complete and currently only displays the edges in a window without transforming them to a point cloud.
+
 ## References
 <a id="1">[1]</a>
 Sun, R., Lei, T., Chen, Q., Wang, Z., Du, X., Zhao, W., & Nandi, A. K. (2022). Survey of Image Edge Detection. Frontiers in Signal Processing, 2. doi:10.3389/frsip.2022.826967
