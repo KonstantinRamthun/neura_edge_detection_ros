@@ -4,6 +4,10 @@
 #include <edge_detection/EdgeDetection.h>
 #include <opencv2/opencv.hpp>
 #include <memory> // For std::unique_ptr
+#include <message_filters/subscriber.h>
+#include <message_filters/synchronizer.h>
+#include <message_filters/sync_policies/approximate_time.h>
+#include <sensor_msgs/PointCloud2.h>
 
 /**
  * Parses the CLI-arguments to an optional OpenCV Mat containing the image.
@@ -87,17 +91,21 @@ class EdgeTransformer{
         : adaptee(nodeHandle.advertise<sensor_msgs::Image>("edge_points", 100)), srv(srv), client(client){}
 
 
-        void callback(const sensor_msgs::Image::ConstPtr& msg){
+        void callback(const sensor_msgs::Image::ConstPtr& colorImage, const sensor_msgs::Image::ConstPtr& depthImage){
             // Detect edges on image
-            srv.request.image = *msg;
+            srv.request.image = *colorImage;
             if (client.call(srv))
             { 
                 cv::Mat edges = cv_bridge::toCvCopy(srv.response.edges)->image;
+                cv::Mat depths = cv_bridge::toCvCopy(depthImage)->image;
                 cv::cvtColor(edges, edges, cv::COLOR_GRAY2RGB);
                 cv::imshow("Edges", edges);
+                cv::imshow("Depths", depths);
                 cv::waitKey(1);
                 // Steps which are missing to complete the task:
                 // Receive depth image from topic /camera/depth/image_rect_raw with additional subscriber
+                ROS_INFO("%d, %d, %s\n", srv.response.edges.width, srv.response.edges.width, srv.response.edges.encoding.c_str());
+                ROS_INFO("%d, %d, %s\n", depthImage->width, depthImage->width, depthImage->encoding.c_str());
                 // Transform edges to point cloud with info from depth image and camera info (/camera/color/camera_info)
                 // Publish point cloud with adaptee
             }
@@ -106,6 +114,11 @@ class EdgeTransformer{
                 ROS_ERROR("Failed to call service detect_edges");
             }
             
+        }
+
+        sensor_msgs::PointCloud2 edgesToPointCloud(const cv::Mat& edges, const cv::Mat& depths){
+            sensor_msgs::PointCloud2 result;
+            return result;
         }
 };
 
@@ -116,7 +129,12 @@ class EdgeTransformer{
 /// @return True
 bool detectAndTransform(ros::NodeHandle& nodeHandle, edge_detection::EdgeDetection& srv, ros::ServiceClient& client){
     EdgeTransformer edgeTransformer(nodeHandle, srv, client);
-    ros::Subscriber subscriber = nodeHandle.subscribe("/camera/color/image_raw", 1, &EdgeTransformer::callback, &edgeTransformer);
+    // http://wiki.ros.org/message_filters#Policy-Based_Synchronizer_.5BROS_1.1.2B-.5D
+    message_filters::Subscriber<sensor_msgs::Image> color_sub(nodeHandle, "/camera/color/image_raw", 1);
+    message_filters::Subscriber<sensor_msgs::Image> depth_sub(nodeHandle, "/camera/depth/image_rect_raw", 1);
+    typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::Image> MySyncPolicy;
+    message_filters::Synchronizer<MySyncPolicy> sync(MySyncPolicy(10), color_sub, depth_sub);
+    sync.registerCallback(boost::bind(&EdgeTransformer::callback, &edgeTransformer, _1, _2));
     ros::spin();
     return true;
 }

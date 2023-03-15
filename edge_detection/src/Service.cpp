@@ -5,6 +5,7 @@
 #include <opencv2/opencv.hpp>
 #include <memory> // For std::unique_ptr
 
+
        
 /**
  * Parses the CLI-arguments to an edge detector.
